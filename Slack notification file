@@ -1,0 +1,35 @@
+#trivy output send to slack
+
+post{
+always {
+        emailext attachLog: true,
+        subject: "'${currentBuild.result)'",
+        body: "Project: ${env.JOB_NAME}<br/>" +
+        "Build Number: ${env.BUILD_NUMBER}<br/>" +
+        "URL: ${env.BUILD_URL}<br/>",
+        to: 'sanju@gmail.com',
+        attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+}
+}
+
+
+#simple build notification to slack
+
+def COLOR MAP = [
+
+'FAILURE': 'danger',
+
+'SUCCESS': 'good'
+
+]
+
+post {
+always (
+    echo 'Slack Notifications'
+    slackSend (
+    channel: '#devopsprojectswithsanju",
+    color: COLOR_MAP[currentBuild.currentResult],
+    message: ""$(currentBuild.currentResult): Job $(env.308_NAME) \n build $(env.BUILD_NUMBER) \n More info at: $(env.BUILD_URL)"
+
+)
+}
